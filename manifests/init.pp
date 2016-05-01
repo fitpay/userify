@@ -7,8 +7,14 @@ class userify(
     $self_signed = 0
 ) {
 
+  if $self_signed == 1 {
+    $insecure = '-1 -k'     # skip root CA verify, accept self-signed certs
+  } else {
+    $insecure = ''
+  }
+
   exec { 'userify':
-    command => "curl -sS \"https://dashboard.userify.com/installer.sh\" | \
+    command => "curl -sS ${insecure} \"https://${static_host}/installer.sh\" | \
       static_host=\"${static_host}\" \
       shim_host=\"${shim_host}\" \
       self_signed=${self_signed} \
