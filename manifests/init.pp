@@ -8,13 +8,13 @@ class userify(
 ) {
 
   if $self_signed == 1 {
-    $insecure = '-1 -k'     # skip root CA verify, accept self-signed certs
+    $insecure = '-k'     # skip root CA verify, accept self-signed certs
   } else {
     $insecure = ''
   }
 
   exec { 'userify':
-    command => "curl -sS ${insecure} \"https://${static_host}/installer.sh\" | \
+    command => "curl -sS1 ${insecure} \"https://${static_host}/installer.sh\" | \
       static_host=\"${static_host}\" \
       shim_host=\"${shim_host}\" \
       self_signed=${self_signed} \
