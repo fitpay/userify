@@ -13,28 +13,21 @@ class userify(
     $insecure = ''
   }
 
-  File {
-    owner => 'root',
-    group => 'root'
-  }
-
-  file { '/opt/userify':
-    ensure => directory,
-    mode   => '0700'
-  } ->
-
   # This is used in case userify is laid down already and the configuration
   # changes for whatever reason, the idea is this file will then change and
   # the notify will cause a re-install/setup of userify below
-  file { '/opt/userify/.userify-config':
+  file { '/etc/userify-config':
     ensure  => present,
+    owner   => 'root',
+    group   => 'root'
     mode    => '0400',
     content => template('userify/userify-config.erb'),
-    notify  => Exec['preuserify']
+    notify  => Exec['remove existing userify installation']
   }
 
   exec { 'remove existing userify installation':
-    command     => 'rm -rf /opt/userify/*.*',
+    path        => ['/bin', '/sbin', '/usr/bin', '/usr/sbin'],
+    command     => 'rm -rf /opt/userify',
     refreshonly => true,
     notify      => Exec['userify']
   }
@@ -50,5 +43,4 @@ class userify(
     creates => '/opt/userify/shim.sh',
     path    => ['/bin', '/sbin', '/usr/bin', '/usr/sbin']
   }
-
 }
