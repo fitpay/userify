@@ -30,7 +30,13 @@ class userify(
     ensure  => present,
     mode    => '0400',
     content => template('userify/userify-config.erb'),
-    notify  => Exec['userify']
+    notify  => Exec['preuserify']
+  }
+
+  exec { 'remove existing userify installation':
+    command     => 'rm -rf /opt/userify/*.*',
+    refreshonly => true,
+    notify      => Exec['userify']
   }
 
   exec { 'userify':
