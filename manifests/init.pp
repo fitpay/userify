@@ -19,7 +19,7 @@ class userify(
   file { '/etc/userify-config':
     ensure  => present,
     owner   => 'root',
-    group   => 'root'
+    group   => 'root',
     mode    => '0400',
     content => template('userify/userify-config.erb'),
     notify  => Exec['remove existing userify installation']
