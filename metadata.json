@@ -1,0 +1,12 @@
+{
+    "name": "fitpayops-userify",
+    "author": "fitpayops",
+    "version": "1.0.0",
+    "license": "MIT",
+    "summary": "Userify shim installation",
+    "source": "https://github.com/fitpay/userify",
+    "dependencies": [
+        { "name": "puppetlabs/stdlib" }
+    ],
+    "data_provider": "hiera"
+}
