@@ -4,20 +4,22 @@ class userify(
     $api_key,
     $static_host = 'static.userify.com',
     $shim_host = 'configure.userify.com',
-    $self_signed = 0
+    $self_signed = false,
 ) {
 
-  if $self_signed == 1 {
-    $insecure = '-k'     # skip root CA verify, accept self-signed certs
+  if $self_signed == true {
+    # skip root CA verify, accept self-signed certs
+    $insecure = '-k'
+    $insecure_cert = '1'
   } else {
     $insecure = ''
+    $insecure_cert = '0'
   }
 
   # This is used in case userify is laid down already and the configuration
   # changes for whatever reason, the idea is this file will then change and
   # the notify will cause a re-install/setup of userify below
   file { '/etc/userify-config':
-    ensure  => present,
     owner   => 'root',
     group   => 'root',
     mode    => '0400',
@@ -33,14 +35,15 @@ class userify(
   }
 
   exec { 'userify':
-    command => "curl -sS1 ${insecure} \"https://${static_host}/installer.sh\" | \
-      static_host=\"${static_host}\" \
-      shim_host=\"${shim_host}\" \
-      self_signed=${self_signed} \
-      api_id=\"${api_id}\" \
-      api_key=\"${api_key}\" \
-      /bin/sh",
+    path    => ['/bin', '/sbin', '/usr/bin', '/usr/sbin'],
+    command => "curl -1 -sS ${insecure} \
+                  'https://${static_host}/installer.sh' | \
+                  api_key='${api_key}' \
+                  api_id='${api_id}' \
+                  static_host='${static_host}' \
+                  shim_host='${shim_host}' \
+                  self_signed=${insecure_cert} \
+                  /bin/sh",
     creates => '/opt/userify/shim.sh',
-    path    => ['/bin', '/sbin', '/usr/bin', '/usr/sbin']
   }
 }
