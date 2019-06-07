@@ -7,6 +7,5 @@
     "source": "https://github.com/fitpay/userify",
     "dependencies": [
         { "name": "puppetlabs/stdlib" }
-    ],
-    "data_provider": "hiera"
+    ]
 }
